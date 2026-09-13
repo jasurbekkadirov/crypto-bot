@@ -164,3 +164,32 @@ def run_server():
 
 # Veb-serverni alohida oqimda (thread) ishga tushiramiz
 threading.Thread(target=run_server, daemon=True).start()
+
+import os
+import threading
+from http.server import HTTPServer, BaseHTTPRequestHandler
+
+# 1. Render talab qiladigan portni zudlik bilan ochuvchi veb-server
+class HealthCheckHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"Crypto Bot is alive and running!")
+
+def run_server():
+    port = int(os.environ.get("PORT", 10000))
+    server = HTTPServer(("0.0.0.0", port), HealthCheckHandler)
+    server.serve_forever()
+
+# 2. Asosiy savdo botini va Telegram polling'ni ishga tushiruvchi funksiya
+def start_trading_bot():
+    # Bu yerda sizning eski botingiz kodlari / infinity_polling() turishi kerak
+    print("Trading bot started...")
+    # Masalan: bot.infinity_polling()
+
+if __name__ == "__main__":
+    # Veb-serverni fon oqimida (thread) ishga tushiramiz (Render portni darhol ko'rishi uchun)
+    threading.Thread(target=run_server, daemon=True).start()
+    
+    # Asosiy jarayonda esa savdo botini yurgizamiz
+    start_trading_bot()
