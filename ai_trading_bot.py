@@ -212,3 +212,7 @@ if __name__ == "__main__":
     
     # Asosiy jarayonda esa savdo botini yurgizamiz
     start_trading_bot()
+
+if __name__ == "__main__":
+    print("Telegram bot ishga tushdi va xabarlarni kutmoqda...")
+    bot.infinity_polling()
