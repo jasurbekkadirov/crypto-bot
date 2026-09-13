@@ -1,5 +1,6 @@
-requests
+scikit-learn
 joblib
 pandas
 numpy
-scikit-learn
+requests
+pyTelegramBotAPI
