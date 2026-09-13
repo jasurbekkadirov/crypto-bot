@@ -146,3 +146,21 @@ def run_ai_bot():
 
 if __name__ == "__main__":
     run_ai_bot()
+import os
+from http.server import HTTPServer, BaseHTTPRequestHandler
+import threading
+
+# Render talab qiladigan portni ochish uchun veb-server
+class HealthCheckHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"Crypto Bot is alive and running!")
+
+def run_server():
+    port = int(os.environ.get("PORT", 10000))
+    server = HTTPServer(("0.0.0.0", port), HealthCheckHandler)
+    server.serve_forever()
+
+# Veb-serverni alohida oqimda (thread) ishga tushiramiz
+threading.Thread(target=run_server, daemon=True).start()
