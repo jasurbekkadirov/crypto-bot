@@ -1,6 +1,15 @@
+import time
+import json
 import os
 import threading
 from http.server import HTTPServer, BaseHTTPRequestHandler
+import telebot
+import urllib.parse
+import urllib.request
+import joblib
+import pandas as pd
+import warnings
+warnings.filterwarnings('ignore') # Ortiqcha UserWarning'larni berkitish
 
 # Portni zudlik bilan ochish uchun server
 class HealthCheckHandler(BaseHTTPRequestHandler):
@@ -17,15 +26,7 @@ def run_server():
 # Dastur ishga tushishi bilan birinchi bo'lib portni ochamiz
 threading.Thread(target=run_server, daemon=True).start()
 
-import json
-import os
-import time
-import urllib.parse
-import urllib.request
-import joblib
-import pandas as pd
-import warnings
-warnings.filterwarnings('ignore') # Ortiqcha UserWarning'larni berkitish
+
 
 # ==========================================
 # SOZLAMALAR
@@ -99,6 +100,20 @@ def get_klines_and_features(symbol):
             return df['close'].iloc[-1], latest
     except Exception:
         return None, None
+# Render port talabini bajarish uchun kichik veb-server
+class HealthCheckHandler(BaseHTTPRequestHandler):
+    def do_GET(self):
+        self.send_response(200)
+        self.end_headers()
+        self.wfile.write(b"OK")
+
+def run_server():
+    port = int(os.environ.get("PORT", 10000))
+    server = HTTPServer(("0.0.0.0", port), HealthCheckHandler)
+    server.serve_forever()
+
+# Serverni alohida oqimda (thread) ishga tushiramiz
+threading.Thread(target=run_server, daemon=True).start()
 
 def run_ai_bot():
     global BALANCE_USDT
@@ -216,3 +231,4 @@ if __name__ == "__main__":
 if __name__ == "__main__":
     print("Telegram bot ishga tushdi va xabarlarni kutmoqda...")
     bot.infinity_polling()
+
